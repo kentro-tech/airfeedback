@@ -16,45 +16,51 @@ uv add airfeedback
 
 ## Usage
 
+See [tests/demo.py](tests/demo.py) for a complete working example.
+
 ```python
 import air
 from airfeedback import AirFeedback
-from sqlalchemy.ext.asyncio import AsyncSession
 
 # Define your save callback
 async def save_feedback(user_id: int, text: str, route: str | None):
     # Your save logic here (DB, file, API call, etc.)
-    feedback = Feedback(user_id=user_id, text=text, route=route)
-    async with AsyncSession(engine) as session:
-        session.add(feedback)
-        await session.commit()
+    pass
 
 # Initialize AirFeedback
 feedback = AirFeedback(on_save=save_feedback)
 
-# Register the route
 app = air.Air()
 
 @app.post("/feedback")
 async def submit_feedback(request: air.Request, user: CurrentUser):
     return await feedback._submit_handler(request, user)
 
-# In your UI - unstyled by default
-feedback.button()
-feedback.modal()
+# Add to your page
+@app.page
+def index(request: air.Request):
+    return air.layouts.mvpcss(
+        feedback.button(),
+        feedback.modal(),
+        air.H1("My App"),
+    )
+```
 
-# With DaisyUI styling
+## Styling
+
+AirFeedback is unstyled by default. Apply CSS classes to customize appearance for any CSS framework:
+
+```python
+# With DaisyUI
 feedback.button(class_="btn btn-ghost btn-sm")
 feedback.modal(
     modal_class="modal-box",
-    title_class="font-bold text-lg mb-4",
-    textarea_class="textarea textarea-bordered w-full mb-4 min-h-32",
+    textarea_class="textarea textarea-bordered w-full",
     submit_class="btn btn-primary",
-    cancel_class="btn ml-2"
 )
 
 # With custom CSS
-feedback.button(class_="my-feedback-btn")
+feedback.button(class_="my-custom-button")
 feedback.modal(
     textarea_class="my-textarea", 
     submit_class="my-submit-btn"
