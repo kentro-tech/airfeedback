@@ -1,6 +1,6 @@
 [project]
-name = "AirFeedback"
-version = "0.1.0"
+name = "airfeedback"
+version = "0.1.1"
 description = "Simple feedback collection for Air/FastAPI apps"
 readme = "README.md"
 authors = [
